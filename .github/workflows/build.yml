@@ -12,7 +12,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ opened, synchronize, reopened]
 
 permissions: 
   contents: read
@@ -37,6 +37,3 @@ jobs:
 
     - name: Run unit tests
       run: mvn test
-
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v4
