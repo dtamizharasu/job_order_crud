@@ -47,7 +47,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=dtamizharasu_job_order_crud \
+            -Dsonar.projectKey=dtamizharasu_job-order-crud \
             -Dsonar.organization=dtamizharasu \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
@@ -59,7 +59,7 @@ jobs:
       - name: SonarCloud Quality Gate Status
         run: |
           echo "Checking Quality Gate status from SonarCloud API..."
-          PROJECT_KEY="dtamizharasu_job_order_crud"
+          PROJECT_KEY="dtamizharasu_job-order-crud"
           SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}"
           SONAR_API_URL="https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECT_KEY"
 
