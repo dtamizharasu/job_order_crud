@@ -92,6 +92,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Copy JAR to generic name
+        run: cp target/*.jar target/app.jar
+
       - name: Build and push Docker image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/java-koyeb-app:latest .
@@ -99,7 +102,7 @@ jobs:
 
       - name: Install Koyeb CLI
         run: |
-          curl -s https://app.koyeb.com/install.sh | bash
+          curl -sL https://downloads.koyeb.com/cli/koyeb.sh | bash
           sudo mv koyeb /usr/local/bin
 
       - name: Deploy to Koyeb
