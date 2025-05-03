@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    environment {
+        ARTIFACTORY_URL = 'https://your-artifactory-url.com'
+        DEPLOY_SERVER = 'your-deployment-server'
+        ARTIFACT_USER = credentials('your-artifactory-username')
+        ARTIFACT_PASS = credentials('your-artifactory-password')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '📥 Cloning repository from GitHub...'
+                git url: 'https://github.com/your-org/your-repo.git', branch: 'main'
+                #git credentialsId: 'your-github-credentials-id', url: 'https://github.com/your-org/your-repo.git', branch: 'main'
+
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo '🔨 Building the Spring Boot project...'
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                echo '🧪 Running unit tests...'
+                sh 'mvn test'
+            }
+        }
+
+        stage('Upload to Artifact Repository') {
+            steps {
+                echo '📦 Uploading JAR to Artifactory...'
+                sh '''
+                    FILE=$(ls target/*.jar | head -n 1)
+                    curl -u $ARTIFACT_USER:$ARTIFACT_PASS -T $FILE $ARTIFACTORY_URL/repo-path/
+                '''
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                echo '🚀 Deploying to server...'
+                sh '''
+                    FILE=$(ls target/*.jar | head -n 1)
+                    scp $FILE user@$DEPLOY_SERVER:/path/to/deploy/
+                    ssh user@$DEPLOY_SERVER "systemctl restart my-springboot-app"
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed.'
+        }
+    }
+}
