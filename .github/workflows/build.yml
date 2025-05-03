@@ -46,7 +46,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn sonar:sonar \
             -Dsonar.projectKey=dtamizharasu_job_order_crud \
             -Dsonar.organization=dtamizharasu \
             -Dsonar.host.url=https://sonarcloud.io \
