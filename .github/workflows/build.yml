@@ -99,7 +99,8 @@ jobs:
 
       - name: Install Koyeb CLI
         run: |
-          curl -sL https://downloads.koyeb.com/cli/koyeb.sh | bash
+          curl -sL https://github.com/koyeb/koyeb-cli/releases/latest/download/koyeb-linux-amd64 -o koyeb
+          chmod +x koyeb
           sudo mv koyeb /usr/local/bin
 
       - name: Deploy to Koyeb
