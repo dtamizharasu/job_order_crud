@@ -29,7 +29,20 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Build and Analyze
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            target
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build and Unit Test
+        run: mvn -B clean install
+
+      - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
@@ -43,7 +56,7 @@ jobs:
             -Dsonar.java.binaries=target/classes \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
-      - name: Check SonarCloud Quality Gate Status
+      - name: SonarCloud Quality Gate Status
         run: |
           echo "Checking Quality Gate status from SonarCloud API..."
           PROJECT_KEY="dtamizharasu_job_order_crud"
